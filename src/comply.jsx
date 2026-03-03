@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 
 /* ── 디자인 가이드 v1.0 컬러 시스템 ── */
 const BASE = {
@@ -430,9 +430,9 @@ const RoSelect = ({ readOnly, value, onChange, style, children, placeholder }) =
       }
     };
     try { extract(children); } catch(e) {}
-    return React.createElement("input", { readOnly: true, value: label, style: { ...fInput, background: "#F9FAFC", color: C.txt, cursor: "default" } });
+    return <input readOnly value={label} style={{ ...fInput, background: "#F9FAFC", color: C.txt, cursor: "default" }} />;
   }
-  return React.createElement("select", { style: { ...style, backgroundImage: _chevron }, value, onChange }, children);
+  return <select style={{ ...style, backgroundImage: _chevron }} value={value} onChange={onChange}>{children}</select>;
 };
 
 /* ── 정보시스템 추가 레이어 팝업 ── */
@@ -642,9 +642,9 @@ const UnsavedConfirm = ({ open, onDiscard, onSave }) => {
 
 /* ── useEditPanel: editMode + 미저장 확인 공통 훅 ── */
 const useEditPanel = (open, onClose) => {
-  const [editMode, setEditMode] = React.useState(false);
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
-  React.useEffect(() => { if (open) { setEditMode(false); setConfirmOpen(false); } }, [open]);
+  const [editMode, setEditMode] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  useEffect(() => { if (open) { setEditMode(false); setConfirmOpen(false); } }, [open]);
   const startEdit = () => setEditMode(true);
   const requestClose = (saveFn) => {
     if (editMode) { setConfirmOpen(true); }
@@ -3888,7 +3888,7 @@ const UserPanel = ({ open, onClose, user, groups }) => {
   const [form, setForm] = useState(emptyForm);
   const [editMode, setEditMode] = useState(false);
   const [pwResetDone, setPwResetDone] = useState(false);
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   useEffect(() => {
     if (open && user) {
       setForm({ st: user.useYn || "Y", userId: user.userId, userNm: user.userNm, email: user.email, password: "", role: user.userRole, systems: [], lockedYn: "N", groupId: user.groupId || "", phone: user.phone || "", memo: "" });
