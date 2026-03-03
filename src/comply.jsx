@@ -1231,7 +1231,7 @@ const SM = [
 ];
 
 /* ── Sidebar (1Depth 아이콘바 + 2/3Depth 텍스트 패널) ── */
-const Side = ({ menus, cur, nav, site, col, toggle, onWidthChange, bannerH = 0 }) => {
+const Side = ({ menus, cur, nav, site, col, toggle, bannerH = 0 }) => {
   const [selMenu, setSelMenu] = useState(null);
   const [openGroups, setOpenGroups] = useState({});
   const st = sideTheme[site] || sideTheme.m;
@@ -1292,9 +1292,6 @@ const Side = ({ menus, cur, nav, site, col, toggle, onWidthChange, bannerH = 0 }
   const show2 = depth2.length > 0;
   const isGrouped = depth2.some(ch => ch.group);
 
-  // App에 LNB 너비 알림
-  useEffect(() => { onWidthChange && onWidthChange(show2 ? 254 : 64); }, [show2]);
-
   /* 그룹 열림 상태 (활성 그룹은 기본 열림) */
   const activeGroup = findActiveGroup(shownMenu);
   const isGroupOpen = (gk) => {
@@ -1313,7 +1310,7 @@ const Side = ({ menus, cur, nav, site, col, toggle, onWidthChange, bannerH = 0 }
   };
 
   return (
-    <div style={{ display: "flex", flexShrink: 0, height: `calc(100vh - ${67 + bannerH}px)`, position: "fixed", top: 67 + bannerH, left: 0, zIndex: 190 }}>
+    <div style={{ display: "flex", flexShrink: 0, height: `calc(100vh - ${67 + bannerH}px)`, position: "sticky", top: 67 + bannerH }}>
       {/* ── 1Depth 아이콘바 (64px, 파란 배경 #005CB9) ── */}
       <div style={{ display: "flex", flexDirection: "column", flexShrink: 0, width: 64, background: C.bg, position: "relative" }}>
         {/* 아이콘 리스트 (border-radius 상단 우측 라운드) */}
@@ -1460,7 +1457,7 @@ const Hdr = ({ user, site, sw, logout, siteName, onPwChange, bannerH = 0 }) => {
   const markAll = () => setNoti(noti.map(n => ({ ...n, read: true })));
   useEffect(() => { if (!showNoti) return; const h = (e) => { if (!e.target.closest?.("[data-noti]")) setShowNoti(false); }; document.addEventListener("click", h); return () => document.removeEventListener("click", h); }, [showNoti]);
   return (
-    <div style={{ background: C.bg, position: "fixed", top: bannerH, left: 0, width: "100%", zIndex: 200 }}>
+    <div style={{ background: C.brand, position: "fixed", top: bannerH, left: 0, width: "100%", zIndex: 200 }}>
     <div style={{ height: 67, background: C.bg, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 40px 0 20px", fontSize: 13, flexShrink: 0, borderRadius: "0 0 0 20px" }}>
       {/* 좌측: 로고 - 디자인 가이드 logo-area */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1557,10 +1554,10 @@ const DailyReportPanel = ({ open, onClose, item, canReport = false }) => {
     <SidePanel open={open} onClose={onClose} title="점검 상세" width={showPreview ? 1160 : 600}>
       {item && <>
 
-        {/* 본문: 미리보기(왼쪽) + 폼(오른쪽) 2컬럼 */}
-        <div style={{ display: "flex", flexDirection: "row-reverse", gap: 0, minHeight: 0 }}>
+        {/* 본문: 폼 + 미리보기 2컬럼 */}
+        <div style={{ display: "flex", gap: 0, minHeight: 0 }}>
           {/* 좌: 폼 컬럼 */}
-          <div style={{ flex: "0 0 560px", minWidth: 0, paddingLeft: showPreview ? 20 : 0, borderLeft: showPreview ? `1px solid ${C.brd}` : "none", overflowY: showPreview ? "auto" : "visible", maxHeight: showPreview ? "calc(100vh - 160px)" : "none" }}>
+          <div style={{ flex: "0 0 560px", minWidth: 0, paddingRight: showPreview ? 20 : 0, borderRight: showPreview ? `1px solid ${C.brd}` : "none", overflowY: showPreview ? "auto" : "visible", maxHeight: showPreview ? "calc(100vh - 160px)" : "none" }}>
 
         {/* ── 점검 정보 ── */}
         <div style={{ marginBottom: 18 }}>
@@ -1969,7 +1966,7 @@ const DailyReportPanel = ({ open, onClose, item, canReport = false }) => {
 
           {/* 우: 점검결과 미리보기 컬럼 */}
           {showPreview && (
-            <div style={{ flex: 1, minWidth: 0, paddingRight: 20, overflowY: "auto", maxHeight: "calc(100vh - 160px)" }}>
+            <div style={{ flex: 1, minWidth: 0, paddingLeft: 20, overflowY: "auto", maxHeight: "calc(100vh - 160px)" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: C.txS }}>점검결과 미리보기</span>
                 <span style={{ fontSize: 10, color: C.txL, background: "#F0F5FF", padding: "2px 8px", borderRadius: 10, border: `1px solid ${C.priL}` }}>센티널 수행 결과</span>
@@ -3317,7 +3314,7 @@ const MgrDash = ({ nav }) => {
         </div>
       </Card>
       <Card title="최근 공지사항" onClick={()=>nav&&nav("mbn")}>
-        {NT.slice(0, 3).map(n => <div key={n.id} onClick={()=>nav&&nav("mbn")} style={{ padding: "7px 0", borderBottom: `1px solid ${C.brd}`, display: "flex", justifyContent: "space-between", cursor: "pointer" }} onMouseEnter={e=>e.currentTarget.style.background=C.secL} onMouseLeave={e=>e.currentTarget.style.background=""}><span style={{ fontSize: 13 }}>{n.title}</span><span style={{ fontSize: 11, color: C.txL }}>{n.dt}</span></div>)}
+        {NT.slice(0, 3).map(n => <div key={n.id} style={{ padding: "7px 0", borderBottom: `1px solid ${C.brd}`, display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 13 }}>{n.title}</span><span style={{ fontSize: 11, color: C.txL }}>{n.dt}</span></div>)}
       </Card>
       <Card title="점검 상태 보고" style={{ gridColumn: "span 2" }}>
         {(() => {
@@ -3325,28 +3322,27 @@ const MgrDash = ({ nav }) => {
           const bars = Array.from({ length: days }, (_, i) => {
             const d = new Date(today); d.setDate(d.getDate() - (days - 1 - i));
             const ds = d.toISOString().slice(0, 10);
-            const seed = (ds.charCodeAt(5) * 7 + ds.charCodeAt(8) * 13 + ds.charCodeAt(9) * 23) % 100;
-            const rate = seed < 10 ? 0 : seed < 20 ? Math.floor(seed * 2) : seed < 40 ? Math.floor(50 + seed * 0.5) : seed < 60 ? Math.floor(80 + seed * 0.2) : 100;
-            const st = rate === 100 ? "good" : rate >= 80 ? "warn" : rate >= 50 ? "minor" : rate >= 1 ? "bad" : "down";
-            return { ds, st, rate };
+            const hash = (ds.charCodeAt(5) * 7 + ds.charCodeAt(8) * 13 + ds.charCodeAt(9) * 23) % 100;
+            const st = hash < 55 ? "good" : hash < 72 ? "warn" : hash < 85 ? "minor" : hash < 93 ? "bad" : "down";
+            return { ds, st };
           });
           const colors = { good: "#89c36f", warn: "#c1de82", minor: "#fbf0ae", bad: "#e8915b", down: "#9b212c" };
-          const goodDays = bars.filter(b => b.st === "good").length;
-          const goodRate = ((goodDays / days) * 100).toFixed(1);
+          const goodDays = bars.filter(b => b.st === "good" || b.st === "warn").length;
+          const rate = ((goodDays / days) * 100).toFixed(2);
           return <>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
               <span style={{ fontSize: 13, fontWeight: 500 }}>일상점검 완료율</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: parseFloat(goodRate) >= 98 ? "#16a34a" : parseFloat(goodRate) >= 80 ? "#ca8a04" : C.red }}>{goodRate}%</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: parseFloat(rate) >= 98 ? "#16a34a" : parseFloat(rate) >= 95 ? "#ca8a04" : C.red }}>{rate}%</span>
             </div>
             <div style={{ display: "flex", gap: 1.5, height: 28, borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
-              {bars.map((b, i) => <div key={i} title={`${b.ds} — ${b.rate}%`} style={{ flex: 1, background: colors[b.st], borderRadius: 2, cursor: "pointer", transition: "all .3s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.7"} onMouseLeave={e => e.currentTarget.style.opacity = "1"} />)}
+              {bars.map((b, i) => <div key={i} title={`${b.ds} — ${b.st === "good" ? "정상" : b.st === "warn" ? "경미" : b.st === "minor" ? "경고" : b.st === "bad" ? "지연" : "장애"}`} style={{ flex: 1, background: colors[b.st], borderRadius: 2, cursor: "pointer", transition: "all .3s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.7"} onMouseLeave={e => e.currentTarget.style.opacity = "1"} />)}
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.txL, marginBottom: 10 }}>
               <span>{days}일 전</span>
               <span>오늘</span>
             </div>
             <div style={{ display: "flex", gap: 14, fontSize: 11, color: C.txS }}>
-              {[["100%","good"],["80-99%","warn"],["50-79%","minor"],["1-49%","bad"],["0%","down"]].map(([l, k]) => <span key={k} style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: 2, background: colors[k] }} />{l}</span>)}
+              {[["정상","good"],["경미","warn"],["경고","minor"],["지연","bad"],["장애","down"]].map(([l, k]) => <span key={k} style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: 2, background: colors[k] }} />{l}</span>)}
             </div>
           </>;
         })()}
@@ -3420,32 +3416,31 @@ const MgrDash = ({ nav }) => {
         })()}
       </Card>
 
-      {/* ── 최근 상태점검 보고 타임라인 ── */}
-      <Card title="최근 상태점검 보고" extra={<span style={{ fontSize: 10, color: C.txL }}>최근 24시간</span>}>
+      {/* ── 최근 이상 이력 타임라인 ── */}
+      <Card title="최근 이상 이력" extra={<span style={{ fontSize: 10, color: C.txL }}>최근 24시간</span>}>
         {(() => {
           const logs = [
-            { id: 1, t: "09:15", done: true,  res: "CRM-DB-01",    report: "CRM 데이터베이스 상태점검표_20260224" },
-            { id: 2, t: "08:42", done: true,  res: "SEC-NET-03",   report: "보안장비 상태점검표_20260224" },
-            { id: 3, t: "07:30", done: true,  res: "MAIL-WAS-02",  report: "메일 WAS 상태점검표_20260224" },
-            { id: 4, t: "어제 22:10", done: true,  res: "FIN-SVR-04",   report: "재무 서버 상태점검표_20260223" },
-            { id: 5, t: "어제 18:35", done: false, res: "GW-WEB-01",    report: "게이트웨이 WEB 상태점검표_20260223" },
-            { id: 6, t: "어제 15:20", done: true,  res: "LOG-DB-02",    report: "물류 데이터베이스 상태점검표_20260223" },
-            { id: 7, t: "어제 12:05", done: false, res: "HR-SVR-01",    report: "인사 서버 상태점검표_20260223" },
-            { id: 8, t: "어제 09:40", done: true,  res: "SHR-NET-05",   report: "공유 네트워크 상태점검표_20260223" },
+            { id: 1, t: "09:15", lv: "critical", res: "CRM-DB-01", msg: "디스크 사용률 92% 초과" },
+            { id: 2, t: "08:42", lv: "warning", res: "SEC-NET-03", msg: "IPS 정책 업데이트 실패" },
+            { id: 3, t: "07:30", lv: "critical", res: "MAIL-WAS-02", msg: "서비스 포트 응답 없음" },
+            { id: 4, t: "어제 22:10", lv: "warning", res: "FIN-SVR-04", msg: "CPU 사용률 83% 경고" },
+            { id: 5, t: "어제 18:35", lv: "info", res: "GW-WEB-01", msg: "SSL 인증서 만료 30일 전" },
+            { id: 6, t: "어제 15:20", lv: "critical", res: "LOG-DB-02", msg: "커넥션 풀 고갈" },
+            { id: 7, t: "어제 12:05", lv: "warning", res: "HR-SVR-01", msg: "메모리 사용률 87%" },
+            { id: 8, t: "어제 09:40", lv: "info", res: "SHR-NET-05", msg: "펌웨어 업데이트 권고" },
           ];
+          const lvC = { critical: { bd: "#ef4444", lb: "장애" }, warning: { bd: "#f59e0b", lb: "경고" }, info: { bd: "#3b82f6", lb: "알림" } };
           return <div style={{ position: "relative", paddingLeft: 16 }}>
             <div style={{ position: "absolute", left: 5, top: 4, bottom: 4, width: 2, background: C.brd }} />
-            {logs.slice(0, 5).map((l, i) => <div key={l.id} style={{ position: "relative", paddingLeft: 14, paddingBottom: i < Math.min(logs.length, 5) - 1 ? 10 : 0 }}>
-              <div style={{ position: "absolute", left: -13, top: 3, width: 8, height: 8, borderRadius: 4, background: l.done ? C.sec : C.brd, border: "2px solid #fff" }} />
+            {logs.slice(0, 5).map((l, i) => { const lv = lvC[l.lv]; return <div key={l.id} style={{ position: "relative", paddingLeft: 14, paddingBottom: i < Math.min(logs.length, 5) - 1 ? 10 : 0 }}>
+              <div style={{ position: "absolute", left: -13, top: 3, width: 8, height: 8, borderRadius: 4, background: lv.bd, border: "2px solid #fff" }} />
               <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 10, color: C.txL, minWidth: 50 }}>{l.t}</span>
-                <span style={{ fontSize: 10, fontWeight: 600, padding: "1px 7px", borderRadius: 8,
-                  background: l.done ? "#dcfce7" : "#f1f5f9",
-                  color: l.done ? "#16a34a" : "#94a3b8" }}>완료</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: lv.bd }}>{lv.lb}</span>
                 <span style={{ fontSize: 11, fontWeight: 600, color: C.txt }}>{l.res}</span>
               </div>
-              <div style={{ fontSize: 11, color: C.txS, marginTop: 1 }}>{l.report}</div>
-            </div>)}
+              <div style={{ fontSize: 11, color: C.txS, marginTop: 1 }}>{l.msg}</div>
+            </div>; })}
           </div>;
         })()}
       </Card>
@@ -5066,41 +5061,6 @@ const MgrCategory = () => {
   const [editId, setEditId] = useState(null);
   const [editNm, setEditNm] = useState("");
 
-  /* ── 드래그 상태 ── */
-  const dragItem = useRef(null);   // { depth, id }
-  const dragOver = useRef(null);   // { depth, id }
-  const [dragging, setDragging] = useState(null); // 드래그 중인 id
-
-  const reorder = (arr, fromId, toId) => {
-    const from = arr.findIndex(x => x.id === fromId);
-    const to   = arr.findIndex(x => x.id === toId);
-    if (from === -1 || to === -1 || from === to) return arr;
-    const next = [...arr];
-    const [moved] = next.splice(from, 1);
-    next.splice(to, 0, moved);
-    return next;
-  };
-
-  const handleDragEnd = (depth) => {
-    const { id: fromId } = dragItem.current || {};
-    const { id: toId }   = dragOver.current  || {};
-    if (fromId && toId && fromId !== toId) {
-      if (depth === 1) {
-        setTree(p => reorder(p, fromId, toId));
-      } else if (depth === 2 && sel1) {
-        setTree(p => p.map(c1 => c1.id === sel1
-          ? { ...c1, children: reorder(c1.children, fromId, toId) } : c1));
-      } else if (depth === 3 && sel1 && sel2) {
-        setTree(p => p.map(c1 => c1.id === sel1
-          ? { ...c1, children: c1.children.map(c2 => c2.id === sel2
-            ? { ...c2, children: reorder(c2.children, fromId, toId) } : c2) } : c1));
-      }
-    }
-    dragItem.current = null;
-    dragOver.current = null;
-    setDragging(null);
-  };
-
   const depth2 = sel1 ? (tree.find(c => c.id === sel1)?.children || []) : [];
   const depth3 = sel2 ? (depth2.find(c => c.id === sel2)?.children || []) : [];
 
@@ -5146,30 +5106,15 @@ const MgrCategory = () => {
   const catRow = (item, isActive, onSelect, onDel, depth) => (
     <div
       key={item.id}
-      draggable={editId !== item.id}
-      onDragStart={() => { dragItem.current = { depth, id: item.id }; setDragging(item.id); }}
-      onDragEnter={() => { dragOver.current = { depth, id: item.id }; }}
-      onDragOver={e => e.preventDefault()}
-      onDragEnd={() => handleDragEnd(depth)}
       onClick={() => editId !== item.id && onSelect(item.id)}
       style={{
         display: "flex", alignItems: "center", padding: "9px 14px", cursor: "pointer",
-        background: dragging === item.id ? C.priL : isActive ? C.priL : "",
-        borderBottom: `1px solid ${C.brd}`,
-        opacity: dragging === item.id ? 0.5 : 1,
-        transition: "all .15s"
+        background: isActive ? C.priL : "", borderBottom: `1px solid ${C.brd}`,
+        transition: "all .3s"
       }}
-      onMouseEnter={e => { if (!isActive && dragging !== item.id) e.currentTarget.style.background = "#F9FAFC"; }}
-      onMouseLeave={e => { if (!isActive && dragging !== item.id) e.currentTarget.style.background = ""; }}
+      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "#F9FAFC"; }}
+      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = ""; }}
     >
-      {/* 드래그 핸들 */}
-      {editId !== item.id && (
-        <span style={{ cursor: "grab", marginRight: 6, color: C.txX, flexShrink: 0, lineHeight: 1 }} title="드래그하여 순서 변경">
-          <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
-            {[2,6,10].map(y => [2,7].map(x => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.2" fill={C.txX} />))}
-          </svg>
-        </span>
-      )}
       {editId === item.id ? (
         <input
           autoFocus
@@ -6123,7 +6068,6 @@ const MgrHoliday = () => {
   const [selectedHol, setSelectedHol] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null); // { type, id }
   const [saveConfirm, setSaveConfirm] = useState(null);     // { type, id }
-  const [fetchConfirm, setFetchConfirm] = useState(false);  // 휴무일 가져오기 확인
 
   const [publicHolUse, setPublicHolUse] = useState("사용");
   const [regularHols, setRegularHols] = useState([]);
@@ -6240,7 +6184,6 @@ const MgrHoliday = () => {
                 </span>
               )}
             </div>
-            <Btn onClick={() => setFetchConfirm(true)}>휴무일 가져오기</Btn>
             <Btn primary onClick={() => { setSelectedHol(null); setPanelOpen(true); }}>+ 휴무일 관리</Btn>
           </div>
         </div>
@@ -6695,32 +6638,6 @@ const MgrHoliday = () => {
           )}
         </div>
       </SidePanel>
-
-      {/* 휴무일 가져오기 확인 */}
-      {fetchConfirm && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 300, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,.35)" }} onClick={() => setFetchConfirm(false)} />
-          <div style={{ position: "relative", background: "#fff", borderRadius: 10, padding: "28px 28px 20px", minWidth: 320, maxWidth: 400, boxShadow: "0 8px 32px rgba(0,0,0,.18)", zIndex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <span style={{ width: 36, height: 36, borderRadius: "50%", background: C.priL, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Ic n="download" s={16} c={C.pri} />
-              </span>
-              <span style={{ fontSize: 15, fontWeight: 700, color: C.txt }}>휴무일 가져오기</span>
-            </div>
-            <div style={{ fontSize: 13, color: C.txS, marginBottom: 24, lineHeight: 1.8, paddingLeft: 46 }}>
-              공공 API를 통해 휴무일을 가져옵니다.<br />
-              <span style={{ fontSize: 12, color: C.txL }}>기존 공휴일 데이터가 업데이트됩니다.</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <Btn onClick={() => setFetchConfirm(false)}>아니오</Btn>
-              <Btn primary onClick={() => {
-                // TODO: 공공 API 호출
-                setFetchConfirm(false);
-              }}>예</Btn>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -7295,6 +7212,7 @@ const MgrResourceLog = () => {
   const [dateTo,     setDateTo]   = useState("2026-02-24");
   const [actType,    setActType]  = useState("전체");
   const [page,       setPage]     = useState(1);
+  const [selLog,     setSelLog]   = useState(null);
   const [selSys,     setSelSys]   = useState(null);
 
   const ACT_TYPES = ["전체", "등록", "수정", "비활성"];
@@ -7391,8 +7309,8 @@ const MgrResourceLog = () => {
               {paged.map((l, idx) => {
                 const sysNm = SYS.find(s => s.id === l.sysId)?.nm || l.sysId;
                 return (
-                  <tr key={l.id}
-                    style={{ cursor: "default" }}
+                  <tr key={l.id} onClick={() => setSelLog(l)}
+                    style={{ cursor: "pointer" }}
                     onMouseEnter={e => e.currentTarget.style.background = C.secL}
                     onMouseLeave={e => e.currentTarget.style.background = ""}>
                     <td style={{ padding: "11px 12px", borderBottom: `1px solid ${C.brd}`, textAlign: "center", verticalAlign: "middle", color: C.txL, fontSize: 12 }}>{(page - 1) * PAGE_SZ + idx + 1}</td>
@@ -7415,7 +7333,80 @@ const MgrResourceLog = () => {
           <GuiPag page={page} totalPages={totalPages} setPage={setPage} />
         </div>
 
-      {/* 상세 패널 제거됨 - 목록에서 상태 이력 확인 */}
+      {/* ══ 상세 패널 ══ */}
+      <SidePanel open={!!selLog} onClose={() => setSelLog(null)} title="자원 로그 상세" width={460}>
+        {selLog && (() => {
+          const history = logs
+            .filter(l => l.resNm === selLog.resNm && l.id !== selLog.id)
+            .sort((a, b) => b.dt.localeCompare(a.dt));
+          return (
+          <>
+            {/* 기본 정보 */}
+            <SecTitle label="작업 정보" primary />
+            <div style={{ background: "#f8fafc", borderRadius: 8, border: `1px solid ${C.brd}`, overflow: "hidden", marginBottom: 20 }}>
+              {[
+                ["작업 유형",  <ActBadge v={selLog.actType} />, false],
+                ["대상 자원",  selLog.resNm,                    false],
+                ["자원 분류",  selLog.resCat,                   false],
+                ["작업자",     `${selLog.actor} (${selLog.actorId})`, true],
+                ["작업 일시",  selLog.dt,                       true],
+              ].map(([label, val, mono], i, arr) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
+                  padding: "11px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.brd}` : "none", fontSize: 12 }}>
+                  <span style={{ color: C.txS, flexShrink: 0 }}>{label}</span>
+                  <span style={{ color: C.txt, fontWeight: 500, fontFamily: mono ? "monospace" : "inherit", fontSize: mono ? 12 : 13 }}>{val}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* 변경 히스토리 */}
+            <SecTitle label={`변경 히스토리 · ${selLog.resNm}`} primary />
+            {history.length === 0 ? (
+              <div style={{ padding: "16px 0", fontSize: 12, color: C.txL, textAlign: "center" }}>다른 변경 이력이 없습니다.</div>
+            ) : (
+              <div style={{ position: "relative", paddingLeft: 20, marginBottom: 24 }}>
+                {/* 타임라인 세로선 */}
+                <div style={{ position: "absolute", left: 6, top: 6, bottom: 6, width: 2, background: C.brd }} />
+                {history.map((h, i) => (
+                  <div key={h.id} style={{ position: "relative", marginBottom: i < history.length - 1 ? 16 : 0 }}>
+                    {/* 점 */}
+                    <div style={{ position: "absolute", left: -17, top: 3, width: 8, height: 8, borderRadius: "50%",
+                      background: h.actType === "등록" ? "#16a34a" : h.actType === "비활성" ? "#94a3b8" : C.pri,
+                      border: "2px solid #fff", boxShadow: "0 0 0 1px #e2e8f0" }} />
+                    <div style={{ background: "#f8fafc", border: `1px solid ${C.brd}`, borderRadius: 8, padding: "10px 12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                        <ActBadge v={h.actType} />
+                        <span style={{ fontSize: 11, color: C.txL, fontFamily: "monospace" }}>{h.dt}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: C.txS, marginBottom: 4 }}>
+                        <span style={{ fontWeight: 600, color: C.txt }}>{h.actor}</span>
+                        {h.changed.length > 0 && (
+                          <span> · {h.changed.map((f, fi) => {
+                            const prev = h.prev?.[f];
+                            const cur  = h.snap?.[f];
+                            return (
+                              <span key={fi}>
+                                {fi > 0 && ", "}
+                                <span style={{ fontWeight: 600, color: C.txt }}>{f}</span>
+                                {prev && <span style={{ color: "#94a3b8", textDecoration: "line-through", margin: "0 3px" }}>{prev}</span>}
+                                {prev && <span style={{ color: C.txL, margin: "0 3px" }}>→</span>}
+                                <span style={{ color: C.pri, fontWeight: 600 }}>{cur}</span>
+                              </span>
+                            );
+                          })}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <PanelFooter onCancel={() => setSelLog(null)} onSave={() => setSelLog(null)} saveLabel="확인" />
+          </>
+          );
+        })()}
+      </SidePanel>
     </div>
   );
 };
@@ -7938,26 +7929,26 @@ const MgrAccessLog = () => {
 
   /* ── 샘플 데이터 ── */
   const INIT_LOGS = [
-    { id:"LOG0001", userNm:"홍길동",  userId:"admin",     ip:"192.168.1.10",  menu:"대시보드",     action:"조회", url:"/manager/dashboard",          dt:"2026-02-24 09:13:05", loginDt:"2026-02-24 09:12:33" },
-    { id:"LOG0002", userNm:"김영희",  userId:"jdoe",      ip:"192.168.1.22",  menu:"자원관리",     action:"등록", url:"/manager/resources",           dt:"2026-02-24 09:18:42", loginDt:"2026-02-24 09:15:01" },
-    { id:"LOG0003", userNm:"이철수",  userId:"sysmgr",    ip:"10.0.0.5",      menu:"사용자관리",   action:"수정", url:"/manager/users/edit",          dt:"2026-02-24 09:25:11", loginDt:"2026-02-24 09:20:45" },
-    { id:"LOG0004", userNm:"박민준",  userId:"inspector", ip:"192.168.2.100", menu:"일상점검",     action:"보고", url:"/sentinel/daily/report",       dt:"2026-02-24 10:08:30", loginDt:"2026-02-24 10:03:17" },
-    { id:"LOG0005", userNm:"김영희",  userId:"jdoe",      ip:"192.168.1.22",  menu:"점검현황",     action:"조회", url:"/manager/inspection/status",   dt:"2026-02-24 10:50:22", loginDt:"2026-02-24 10:44:59" },
-    { id:"LOG0006", userNm:"이철수",  userId:"sysmgr",    ip:"10.0.0.5",      menu:"공통코드관리", action:"삭제", url:"/manager/codes/delete",        dt:"2026-02-24 10:47:15", loginDt:"2026-02-24 10:45:03" },
-    { id:"LOG0007", userNm:"이철수",  userId:"sysmgr",    ip:"10.0.0.5",      menu:"권한그룹관리", action:"조회", url:"/manager/permissions",         dt:"2026-02-24 10:52:08", loginDt:"2026-02-24 10:45:21" },
-    { id:"LOG0008", userNm:"홍길동",  userId:"admin",     ip:"192.168.1.10",  menu:"정기점검스케줄",action:"등록",url:"/manager/schedules/new",       dt:"2026-02-24 11:15:33", loginDt:"2026-02-24 11:08:42" },
-    { id:"LOG0009", userNm:"박민준",  userId:"inspector", ip:"192.168.2.100", menu:"특별점검",     action:"조회", url:"/sentinel/special",            dt:"2026-02-24 12:35:10", loginDt:"2026-02-24 12:30:00" },
-    { id:"LOG0010", userNm:"최유지",  userId:"maint01",   ip:"172.16.0.8",    menu:"점검이력",     action:"조회", url:"/manager/inspection/history",  dt:"2026-02-24 13:10:44", loginDt:"2026-02-24 13:01:55" },
-    { id:"LOG0011", userNm:"김영희",  userId:"jdoe",      ip:"192.168.1.22",  menu:"자원로그",     action:"조회", url:"/manager/logs/resources",      dt:"2026-02-24 14:28:19", loginDt:"2026-02-24 14:22:10" },
-    { id:"LOG0012", userNm:"—",       userId:"unknown",   ip:"203.0.113.42",  menu:"로그인",       action:"실패", url:"/login",                       dt:"2026-02-24 14:33:07", loginDt:"—" },
-    { id:"LOG0013", userNm:"—",       userId:"unknown",   ip:"203.0.113.42",  menu:"로그인",       action:"실패", url:"/login",                       dt:"2026-02-24 14:33:19", loginDt:"—" },
-    { id:"LOG0014", userNm:"—",       userId:"unknown",   ip:"203.0.113.42",  menu:"로그인",       action:"실패", url:"/login",                       dt:"2026-02-24 14:33:31", loginDt:"—" },
-    { id:"LOG0015", userNm:"최유지",  userId:"maint01",   ip:"172.16.0.8",    menu:"공지사항",     action:"조회", url:"/manager/notices",             dt:"2026-02-24 15:14:02", loginDt:"2026-02-24 13:01:55" },
-    { id:"LOG0016", userNm:"홍길동",  userId:"admin",     ip:"192.168.1.10",  menu:"대시보드",     action:"조회", url:"/manager/dashboard",           dt:"2026-02-23 09:02:41", loginDt:"2026-02-23 08:55:12" },
-    { id:"LOG0017", userNm:"박민준",  userId:"inspector", ip:"192.168.2.100", menu:"일상점검",     action:"수행", url:"/sentinel/daily/perform",      dt:"2026-02-23 09:48:55", loginDt:"2026-02-23 09:40:38" },
-    { id:"LOG0018", userNm:"이철수",  userId:"sysmgr",    ip:"10.0.0.5",      menu:"시스템정보",   action:"조회", url:"/manager/system/info",         dt:"2026-02-23 11:25:30", loginDt:"2026-02-23 11:20:05" },
-    { id:"LOG0019", userNm:"김영희",  userId:"jdoe",      ip:"192.168.1.22",  menu:"자원관리",     action:"수정", url:"/manager/resources/edit",      dt:"2026-02-22 09:12:18", loginDt:"2026-02-22 09:05:50" },
-    { id:"LOG0020", userNm:"홍길동",  userId:"admin",     ip:"192.168.1.10",  menu:"사용자관리",   action:"조회", url:"/manager/users",               dt:"2026-02-22 16:35:44", loginDt:"2026-02-22 16:30:00" },
+    { id: "LOG0001", userId: "admin",    userNm: "홍길동",  dt: "2026-02-24 09:12:33", ip: "192.168.1.10",  result: "성공", path: "웹" },
+    { id: "LOG0002", userId: "jdoe",     userNm: "김영희",  dt: "2026-02-24 09:15:01", ip: "192.168.1.22",  result: "성공", path: "웹" },
+    { id: "LOG0003", userId: "sysmgr",   userNm: "이철수",  dt: "2026-02-24 09:20:45", ip: "10.0.0.5",      result: "실패", path: "웹" },
+    { id: "LOG0004", userId: "inspector",userNm: "박민준",  dt: "2026-02-24 10:03:17", ip: "192.168.2.100", result: "성공", path: "모바일" },
+    { id: "LOG0005", userId: "jdoe",     userNm: "김영희",  dt: "2026-02-24 10:44:59", ip: "192.168.1.22",  result: "성공", path: "웹" },
+    { id: "LOG0006", userId: "sysmgr",   userNm: "이철수",  dt: "2026-02-24 10:45:03", ip: "10.0.0.5",      result: "실패", path: "웹" },
+    { id: "LOG0007", userId: "sysmgr",   userNm: "이철수",  dt: "2026-02-24 10:45:21", ip: "10.0.0.5",      result: "실패", path: "웹" },
+    { id: "LOG0008", userId: "admin",    userNm: "홍길동",  dt: "2026-02-24 11:08:42", ip: "192.168.1.10",  result: "성공", path: "웹" },
+    { id: "LOG0009", userId: "inspector",userNm: "박민준",  dt: "2026-02-24 12:30:00", ip: "192.168.2.100", result: "성공", path: "모바일" },
+    { id: "LOG0010", userId: "maint01",  userNm: "최유지",  dt: "2026-02-24 13:01:55", ip: "172.16.0.8",    result: "성공", path: "웹" },
+    { id: "LOG0011", userId: "jdoe",     userNm: "김영희",  dt: "2026-02-24 14:22:10", ip: "192.168.1.22",  result: "성공", path: "웹" },
+    { id: "LOG0012", userId: "unknown",  userNm: "—",       dt: "2026-02-24 14:33:07", ip: "203.0.113.42",  result: "실패", path: "웹" },
+    { id: "LOG0013", userId: "unknown",  userNm: "—",       dt: "2026-02-24 14:33:19", ip: "203.0.113.42",  result: "실패", path: "웹" },
+    { id: "LOG0014", userId: "unknown",  userNm: "—",       dt: "2026-02-24 14:33:31", ip: "203.0.113.42",  result: "실패", path: "웹" },
+    { id: "LOG0015", userId: "maint01",  userNm: "최유지",  dt: "2026-02-24 15:10:44", ip: "172.16.0.8",    result: "성공", path: "웹" },
+    { id: "LOG0016", userId: "admin",    userNm: "홍길동",  dt: "2026-02-23 08:55:12", ip: "192.168.1.10",  result: "성공", path: "웹" },
+    { id: "LOG0017", userId: "inspector",userNm: "박민준",  dt: "2026-02-23 09:40:38", ip: "192.168.2.100", result: "성공", path: "모바일" },
+    { id: "LOG0018", userId: "sysmgr",   userNm: "이철수",  dt: "2026-02-23 11:20:05", ip: "10.0.0.5",      result: "성공", path: "웹" },
+    { id: "LOG0019", userId: "jdoe",     userNm: "김영희",  dt: "2026-02-22 09:05:50", ip: "192.168.1.22",  result: "성공", path: "웹" },
+    { id: "LOG0020", userId: "admin",    userNm: "홍길동",  dt: "2026-02-22 16:30:00", ip: "192.168.1.10",  result: "성공", path: "웹" },
   ];
 
   const TODAY    = "2026-02-24";
@@ -7967,15 +7958,17 @@ const MgrAccessLog = () => {
   const [keyword,  setKeyword]  = useState("");
   const [dateFrom, setDateFrom] = useState("2026-02-22");
   const [dateTo,   setDateTo]   = useState(TODAY);
-  const [actionF,  setActionF]  = useState("전체");
+  const [result,   setResult]   = useState("전체");   // 전체 | 성공 | 실패
+  const [path,     setPath]     = useState("전체");   // 전체 | 웹 | 모바일
   const [page,     setPage]     = useState(1);
   const [selLog,   setSelLog]   = useState(null);
 
   /* ── 필터 적용 ── */
   const filtered = logs.filter(l => {
     const kw = keyword.trim().toLowerCase();
-    if (kw && !l.userId.toLowerCase().includes(kw) && !l.userNm.includes(kw) && !l.ip.includes(kw) && !l.menu.includes(kw)) return false;
-    if (actionF !== "전체" && l.action !== actionF) return false;
+    if (kw && !l.userId.toLowerCase().includes(kw) && !l.userNm.includes(kw) && !l.ip.includes(kw)) return false;
+    if (result !== "전체" && l.result !== result) return false;
+    if (path   !== "전체" && l.path   !== path)   return false;
     if (dateFrom && l.dt.slice(0, 10) < dateFrom) return false;
     if (dateTo   && l.dt.slice(0, 10) > dateTo)   return false;
     return true;
@@ -7985,15 +7978,21 @@ const MgrAccessLog = () => {
   const paged = filtered.slice((page - 1) * PAGE_SZ, page * PAGE_SZ);
 
   const search = () => setPage(1);
-  const reset  = () => { setKeyword(""); setDateFrom("2026-02-22"); setDateTo(TODAY); setActionF("전체"); setPage(1); };
+  const reset  = () => { setKeyword(""); setDateFrom("2026-02-22"); setDateTo(TODAY); setResult("전체"); setPath("전체"); setPage(1); };
 
-  /* ── 행동 배지 ── */
-  const ActionBadge = ({ v }) => {
-    const MAP = { "실패": ["#fee2e2","#dc2626"], "등록": ["#dcfce7","#16a34a"], "수정": ["#dbeafe","#1d4ed8"],
-      "삭제": ["#fee2e2","#dc2626"], "보고": ["#fef9c3","#ca8a04"], "수행": ["#f0fdf4","#15803d"] };
-    const [bg, c] = MAP[v] || [C.priL, C.pri];
-    return <span style={{ padding:"2px 9px", borderRadius:10, fontSize:11, fontWeight:700, background:bg, color:c }}>{v}</span>;
-  };
+  /* ── 결과 배지 ── */
+  const ResultBadge = ({ v }) => (
+    <span style={{ padding: "2px 10px", borderRadius: 10, fontSize: 11, fontWeight: 700,
+      background: v === "성공" ? "#dcfce7" : "#fee2e2",
+      color:      v === "성공" ? "#16a34a" : "#dc2626" }}>{v}</span>
+  );
+
+  /* ── 경로 배지 ── */
+  const PathBadge = ({ v }) => (
+    <span style={{ padding: "2px 9px", borderRadius: 10, fontSize: 11, fontWeight: 600,
+      background: v === "모바일" ? "#ede9fe" : C.priL,
+      color:      v === "모바일" ? "#7c3aed" : "#2563eb" }}>{v}</span>
+  );
 
 
   return (
@@ -8006,11 +8005,11 @@ const MgrAccessLog = () => {
         <div style={{ width: "100%", border: `1px solid ${C.brd}`, background: C.bg, borderRadius: 6, padding: "12px", display: "flex", gap: 8, marginBottom: 16, alignItems: "stretch" }}>
           <div style={{ display: "flex", flex: 1, gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: C.txL }}>사용자/IP/메뉴</span>
+              <span style={{ fontSize: 11, fontWeight: 600, color: C.txL }}>사용자/IP</span>
               <input value={keyword} onChange={e => setKeyword(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && search()}
-                placeholder="이름, 아이디, IP, 메뉴"
-                style={{ padding: "6px 12px", border: `1px solid ${C.brd}`, borderRadius: 4, fontSize: 13, outline: "none", color: C.txt, background: "#fff", height: 36, width: 200, fontFamily: "inherit", boxSizing: "border-box" }} />
+                placeholder="사용자 ID, 이름, IP"
+                style={{ padding: "6px 12px", border: `1px solid ${C.brd}`, borderRadius: 4, fontSize: 13, outline: "none", color: C.txt, background: "#fff", height: 36, width: 180, fontFamily: "inherit", boxSizing: "border-box" }} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               <span style={{ fontSize: 11, fontWeight: 600, color: C.txL }}>기간</span>
@@ -8019,6 +8018,18 @@ const MgrAccessLog = () => {
                 <span style={{ color: C.txL, fontSize: 12 }}>~</span>
                 <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ padding: "6px 10px", border: `1px solid ${C.brd}`, borderRadius: 4, fontSize: 13, outline: "none", color: C.txt, background: "#fff", height: 36, fontFamily: "inherit", boxSizing: "border-box" }} />
               </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: C.txL }}>접속결과</span>
+              <select value={result} onChange={e => setResult(e.target.value)} style={{ padding: "6px 10px", border: `1px solid ${C.brd}`, borderRadius: 4, fontSize: 13, background: "#fff", color: C.txt, height: 36, fontFamily: "inherit", boxSizing: "border-box" }}>
+                {["전체", "성공", "실패"].map(v => <option key={v}>{v}</option>)}
+              </select>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: C.txL }}>접속경로</span>
+              <select value={path} onChange={e => setPath(e.target.value)} style={{ padding: "6px 10px", border: `1px solid ${C.brd}`, borderRadius: 4, fontSize: 13, background: "#fff", color: C.txt, height: 36, fontFamily: "inherit", boxSizing: "border-box" }}>
+                {["전체", "웹", "모바일"].map(v => <option key={v}>{v}</option>)}
+              </select>
             </div>
           </div>
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -8046,29 +8057,28 @@ const MgrAccessLog = () => {
           <table style={{ minWidth: "100%", width: "max-content", borderCollapse: "collapse", fontSize: 15, borderBottom: `1px solid ${C.brd}` }}>
             <thead>
               <tr style={{ borderTop: `1px solid ${C.txH}` }}>
-                {[["No.",70],["이름",100],["아이디",120],["IP",140],["메뉴",120],["URL",220],["일시",160],["로그인일시",160]].map(([h,w],i) => (
-                  <th key={i} style={{ padding:"9px 12px", borderBottom:`1px solid ${C.brdD}`, textAlign:"center", fontSize:14, fontWeight:400, color:C.txL, whiteSpace:"nowrap", verticalAlign:"middle" }}>{h}</th>
+                {[["No.", 70], ["사용자 ID", 130], ["사용자명", 100], ["접속 일시", 160], ["접속 IP", 140], ["경로", 90], ["결과", 90]].map(([h, w], i) => (
+                  <th key={i} style={{ padding: "9px 12px", borderBottom: `1px solid ${C.brdD}`, textAlign: "center", fontSize: 14, fontWeight: 400, color: C.txL, whiteSpace: "nowrap", verticalAlign: "middle" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {paged.map((l, idx) => (
-                <tr key={l.id}
-                  style={{ cursor:"default" }}
+                <tr key={l.id} onClick={() => setSelLog(l)}
+                  style={{ cursor: "pointer" }}
                   onMouseEnter={e => e.currentTarget.style.background = C.secL}
                   onMouseLeave={e => e.currentTarget.style.background = ""}>
-                  <td style={{ padding:"11px 12px", borderBottom:`1px solid ${C.brd}`, textAlign:"center", verticalAlign:"middle", color:C.txL, fontSize:12 }}>{(page-1)*PAGE_SZ+idx+1}</td>
-                  <td style={{ padding:"11px 12px", borderBottom:`1px solid ${C.brd}`, textAlign:"center", verticalAlign:"middle", fontWeight:600, color:C.txt }}>{l.userNm}</td>
-                  <td style={{ padding:"11px 12px", borderBottom:`1px solid ${C.brd}`, textAlign:"center", verticalAlign:"middle", color:C.txS, fontFamily:"monospace", fontSize:13 }}>{l.userId}</td>
-                  <td style={{ padding:"11px 12px", borderBottom:`1px solid ${C.brd}`, textAlign:"center", verticalAlign:"middle", color:C.txt, fontFamily:"monospace", fontSize:13 }}>{l.ip}</td>
-                  <td style={{ padding:"11px 12px", borderBottom:`1px solid ${C.brd}`, textAlign:"center", verticalAlign:"middle", color:C.txt }}>{l.menu}</td>
-                  <td style={{ padding:"11px 12px", borderBottom:`1px solid ${C.brd}`, textAlign:"left",   verticalAlign:"middle", color:C.txS, fontFamily:"monospace", fontSize:12, maxWidth:220, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.url}</td>
-                  <td style={{ padding:"11px 12px", borderBottom:`1px solid ${C.brd}`, textAlign:"center", verticalAlign:"middle", color:C.txt, fontFamily:"monospace", fontSize:13, whiteSpace:"nowrap" }}>{l.dt}</td>
-                  <td style={{ padding:"11px 12px", borderBottom:`1px solid ${C.brd}`, textAlign:"center", verticalAlign:"middle", color:C.txS, fontFamily:"monospace", fontSize:13, whiteSpace:"nowrap" }}>{l.loginDt}</td>
+                  <td style={{ padding: "11px 12px", borderBottom: `1px solid ${C.brd}`, textAlign: "center", verticalAlign: "middle", color: C.txL, fontSize: 12 }}>{(page - 1) * PAGE_SZ + idx + 1}</td>
+                  <td style={{ padding: "11px 12px", borderBottom: `1px solid ${C.brd}`, textAlign: "center", verticalAlign: "middle", fontWeight: 600, color: C.txt, fontFamily: "monospace", fontSize: 13 }}>{l.userId}</td>
+                  <td style={{ padding: "11px 12px", borderBottom: `1px solid ${C.brd}`, textAlign: "center", verticalAlign: "middle", color: C.txt }}>{l.userNm}</td>
+                  <td style={{ padding: "11px 12px", borderBottom: `1px solid ${C.brd}`, textAlign: "center", verticalAlign: "middle", color: C.txt, fontFamily: "monospace", fontSize: 13 }}>{l.dt}</td>
+                  <td style={{ padding: "11px 12px", borderBottom: `1px solid ${C.brd}`, textAlign: "center", verticalAlign: "middle", color: C.txt, fontFamily: "monospace", fontSize: 13 }}>{l.ip}</td>
+                  <td style={{ padding: "11px 12px", borderBottom: `1px solid ${C.brd}`, textAlign: "center", verticalAlign: "middle" }}><PathBadge v={l.path} /></td>
+                  <td style={{ padding: "11px 12px", borderBottom: `1px solid ${C.brd}`, textAlign: "center", verticalAlign: "middle" }}><ResultBadge v={l.result} /></td>
                 </tr>
               ))}
               {!paged.length && (
-                <tr><td colSpan={8} style={{ padding:48, textAlign:"center", color:C.txL, fontSize:13 }}>조회된 접속 이력이 없습니다.</td></tr>
+                <tr><td colSpan={7} style={{ padding: 48, textAlign: "center", color: C.txL, fontSize: 13 }}>조회된 접속 이력이 없습니다.</td></tr>
               )}
             </tbody>
           </table>
@@ -8077,6 +8087,74 @@ const MgrAccessLog = () => {
           <GuiPag page={page} totalPages={totalPages} setPage={setPage} />
         </div>
       </div>
+
+      {/* ══ 상세 패널 ══ */}
+      <SidePanel open={!!selLog} onClose={() => setSelLog(null)} title="접속 로그 상세" width={420}>
+        {selLog && (() => {
+          const userHistory = logs
+            .filter(l => l.userId === selLog.userId && l.id !== selLog.id)
+            .sort((a, b) => b.dt.localeCompare(a.dt))
+            .slice(0, 10);
+          return (
+            <>
+              <SecTitle label="접속 정보" primary />
+              <div style={{ background: "#f8fafc", borderRadius: 8, border: `1px solid ${C.brd}`, overflow: "hidden", marginBottom: 20 }}>
+                {[
+                  ["사용자 ID",  selLog.userId,  true ],
+                  ["사용자명",   selLog.userNm,  false],
+                  ["접속 일시",  selLog.dt,      true ],
+                  ["접속 IP",    selLog.ip,      true ],
+                  ["접속 경로",  selLog.path,    false],
+                  ["접속 결과",  selLog.result,  false],
+                ].map(([label, val, mono], i, arr) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "11px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.brd}` : "none", fontSize: 12 }}>
+                    <span style={{ color: C.txS, flexShrink: 0 }}>{label}</span>
+                    {label === "접속 결과"
+                      ? <ResultBadge v={val} />
+                      : label === "접속 경로"
+                      ? <PathBadge v={val} />
+                      : <span style={{ color: C.txt, fontWeight: 500, fontFamily: mono ? "monospace" : "inherit", fontSize: mono ? 12 : 13 }}>{val}</span>
+                    }
+                  </div>
+                ))}
+              </div>
+
+              {/* 접속 히스토리 */}
+              <SecTitle label={`접속 히스토리 · ${selLog.userId}`} primary />
+              {userHistory.length === 0 ? (
+                <div style={{ padding: "16px 0", fontSize: 12, color: C.txL, textAlign: "center" }}>다른 접속 이력이 없습니다.</div>
+              ) : (
+                <div style={{ position: "relative", paddingLeft: 20, marginBottom: 24 }}>
+                  {/* 타임라인 세로선 */}
+                  <div style={{ position: "absolute", left: 6, top: 6, bottom: 6, width: 2, background: C.brd }} />
+                  {userHistory.map((h, i) => (
+                    <div key={h.id} style={{ position: "relative", marginBottom: i < userHistory.length - 1 ? 12 : 0 }}>
+                      {/* 점 */}
+                      <div style={{ position: "absolute", left: -17, top: 4, width: 8, height: 8, borderRadius: "50%",
+                        background: h.result === "성공" ? "#16a34a" : "#dc2626",
+                        border: "2px solid #fff", boxShadow: "0 0 0 1px #e2e8f0" }} />
+                      <div style={{ background: "#f8fafc", border: `1px solid ${C.brd}`, borderRadius: 8, padding: "9px 12px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                          <ResultBadge v={h.result} />
+                          <span style={{ fontSize: 11, color: C.txL, fontFamily: "monospace" }}>{h.dt}</span>
+                        </div>
+                        <div style={{ fontSize: 12, color: C.txS, display: "flex", gap: 8 }}>
+                          <span><span style={{ color: C.txL }}>IP</span> <span style={{ fontFamily: "monospace", color: C.txt }}>{h.ip}</span></span>
+                          <span>·</span>
+                          <PathBadge v={h.path} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <PanelFooter onCancel={() => setSelLog(null)} onSave={() => setSelLog(null)} saveLabel="확인" />
+            </>
+          );
+        })()}
+      </SidePanel>
     </div>
   );
 };
@@ -8180,7 +8258,7 @@ const MgrPermLog = () => {
         <table style={{ minWidth: "100%", width: "max-content", borderCollapse: "collapse", fontSize: 15, borderBottom: `1px solid ${C.brd}` }}>
           <thead>
             <tr style={{ borderTop: `1px solid ${C.txH}` }}>
-              {[["No.",70],["변경 일시",160],["대상자 ID",120],["대상자명",100],["변경 전 역할",130],["",30],["변경 후 역할",130],["정보시스템",140],["변경자",100]].map(([h,w],i) => (
+              {[["No.",70],["변경 일시",160],["대상자 ID",120],["대상자명",100],["변경 전 역할",130],["",30],["변경 후 역할",130],["정보시스템",140],["변경자",100],["사유",120]].map(([h,w],i) => (
                 <th key={i} style={{ padding:"9px 12px", borderBottom:`1px solid ${C.brdD}`, textAlign:"center", fontSize:14, fontWeight:400, color:C.txL, whiteSpace:"nowrap", verticalAlign:"middle" }}>{h}</th>
               ))}
             </tr>
@@ -8199,10 +8277,11 @@ const MgrPermLog = () => {
                 <td style={{padding:"11px 12px",borderBottom:`1px solid ${C.brd}`,textAlign:"center",verticalAlign:"middle"}}><RoleBadgeP v={l.nextRole}/></td>
                 <td style={{padding:"11px 12px",borderBottom:`1px solid ${C.brd}`,textAlign:"center",fontSize:13,color:C.txt,verticalAlign:"middle"}}>{l.sysNm}</td>
                 <td style={{padding:"11px 12px",borderBottom:`1px solid ${C.brd}`,textAlign:"center",fontSize:13,color:C.txS,verticalAlign:"middle"}}>{l.userNm}</td>
+                <td style={{padding:"11px 12px",borderBottom:`1px solid ${C.brd}`,textAlign:"center",fontSize:13,color:C.txS,verticalAlign:"middle"}}>{l.reason}</td>
               </tr>
             ))}
             {paged.length === 0 && (
-              <tr><td colSpan={9} style={{padding:48,textAlign:"center",color:C.txL,fontSize:13}}>권한 변경 이력이 없습니다.</td></tr>
+              <tr><td colSpan={10} style={{padding:48,textAlign:"center",color:C.txL,fontSize:13}}>권한 변경 이력이 없습니다.</td></tr>
             )}
           </tbody>
         </table>
@@ -8222,46 +8301,36 @@ const MgrPermLog = () => {
           </div>
         )}
 
-        {/* 상세 사이드 패널 */}
-        <SidePanel open={!!selLog} onClose={() => setSelLog(null)} title="권한 변경 상세" width={480}>
-          {selLog && (() => {
-            const roVal = (val) => <input readOnly value={val} style={{...fInput, background:"#F9FAFC", pointerEvents:"none", color:C.txt}} />;
-            return (
-              <div>
-                <SecTitle label="대상자 정보" primary />
-                <FormRow label="변경 일시">{roVal(selLog.dt)}</FormRow>
-                <div style={{display:"flex",gap:12}}>
-                  <FormRow label="대상자 ID" half>{roVal(selLog.targetId)}</FormRow>
-                  <FormRow label="대상자명" half>
-                    <input readOnly value={selLog.targetNm} style={{...fInput, background:"#F9FAFC", pointerEvents:"none", color:C.pri, fontWeight:600}} />
-                  </FormRow>
-                </div>
-                <SecTitle label="역할 변경" />
-                <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:14}}>
-                  <div style={{flex:1}}>
-                    <label style={{fontSize:13,fontWeight:500,color:C.txL,marginBottom:6,display:"block"}}>변경 전 역할</label>
-                    <div style={{padding:"9px 14px",border:`1px solid ${C.brd}`,borderRadius:4,background:"#F9FAFC",minHeight:38}}>
-                      {selLog.prevRole === "—" ? <span style={{color:C.txL}}>—</span> : <RoleBadgeP v={selLog.prevRole} />}
-                    </div>
-                  </div>
-                  <div style={{paddingTop:20,color:C.txL,fontSize:18,flexShrink:0}}>→</div>
-                  <div style={{flex:1}}>
-                    <label style={{fontSize:13,fontWeight:500,color:C.txL,marginBottom:6,display:"block"}}>변경 후 역할</label>
-                    <div style={{padding:"9px 14px",border:`1px solid ${C.brd}`,borderRadius:4,background:"#F9FAFC",minHeight:38}}>
-                      <RoleBadgeP v={selLog.nextRole} />
-                    </div>
-                  </div>
-                </div>
-                <SecTitle label="변경 정보" />
-                <FormRow label="정보시스템">{roVal(selLog.sysNm)}</FormRow>
-                <FormRow label="변경자">{roVal(`${selLog.userNm} (${selLog.userId})`)}</FormRow>
-                <div style={{display:"flex",justifyContent:"flex-end",paddingTop:16,borderTop:`1px solid ${C.brd}`}}>
-                  <Btn onClick={() => setSelLog(null)}>닫기</Btn>
-                </div>
-              </div>
-            );
-          })()}
-        </SidePanel>
+        {/* 오른쪽 상세 패널 */}
+        <div style={{position:"fixed",top:67,right:0,width:selLog?420:0,height:"calc(100% - 67px)",background:"#fff",zIndex:300,boxShadow:selLog?"-4px 0 20px rgba(0,0,0,.12)":"none",transition:"width .3s ease",overflow:"hidden",display:"flex",flexDirection:"column"}}>
+          {selLog && <>
+            <div style={{padding:"20px 24px",borderBottom:`1px solid ${C.brd}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+              <span style={{fontSize:18,fontWeight:700,color:C.txH}}>권한 변경 상세</span>
+              <button onClick={()=>setSelLog(null)} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:C.txL}}>×</button>
+            </div>
+            <div style={{flex:1,overflowY:"auto",padding:"20px 24px"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",fontSize:14}}>
+                <tbody>
+                  {[
+                    ["변경 일시", selLog.dt],
+                    ["대상자 ID", <span key="tid" style={{fontFamily:"monospace"}}>{selLog.targetId}</span>],
+                    ["대상자명", <span key="tnm" style={{fontWeight:600,color:C.pri}}>{selLog.targetNm}</span>],
+                    ["변경 전 역할", selLog.prevRole==="—"?<span key="pr" style={{color:C.txL}}>—</span>:<RoleBadgeP key="prb" v={selLog.prevRole}/>],
+                    ["변경 후 역할", <RoleBadgeP key="nrb" v={selLog.nextRole}/>],
+                    ["정보시스템", selLog.sysNm],
+                    ["변경자", `${selLog.userNm} (${selLog.userId})`],
+                    ["사유", selLog.reason],
+                  ].map(([k,v],i) => (
+                    <tr key={i}>
+                      <td style={{padding:"10px 0",fontWeight:600,color:C.txS,width:110,verticalAlign:"top",fontSize:13}}>{k}</td>
+                      <td style={{padding:"10px 0",color:C.txt}}>{v}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>}
+        </div>
 
       </div>
     </div>
@@ -9727,7 +9796,6 @@ export default function App() {
   const [auth, setAuth] = useState({ ok: false, user: null, site: null });
   const [pg, setPg] = useState("");
   const [col, setCol] = useState(false);
-  const [lnbW, setLnbW] = useState(254);
   const [gToast, setGToast] = useState(null);
   const toast = useCallback((msg, ok=true) => { setGToast({msg, ok}); setTimeout(() => setGToast(null), 2800); }, []);
   const [showPwChange, setShowPwChange] = useState(false);
@@ -9753,7 +9821,7 @@ export default function App() {
   const bannerH = (bannerPreview && !bannerClosed) ? 40 : 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: C.bg, fontFamily: '"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,sans-serif' }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden", background: C.bg, fontFamily: '"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,sans-serif' }}>
       {/* 공지배너 미리보기 - 헤더 위 */}
       {(bannerPreview && !bannerClosed) && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 300, background: bannerPreview.bg, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 20px", animation: "modalIn .15s ease" }}>
@@ -9767,10 +9835,10 @@ export default function App() {
         </div>
       )}
       <Hdr user={auth.user} site={auth.site} sw={sw} logout={logout} siteName={auth.site === "m" ? "Manager" : "Sentinel"} onPwChange={() => { setPwForm({cur:"",next:"",confirm:""}); setPwErr(""); setShowPwChange(true); }} bannerH={bannerH} />
-      <div style={{ display: "flex", flex: 1, minHeight: 0, background: C.bg, marginTop: 67 + bannerH }}>
-        <Side menus={auth.site === "m" ? MM : SM} cur={pg} nav={setPg} site={auth.site} col={col} toggle={() => setCol(!col)} onWidthChange={setLnbW} bannerH={bannerH} />
+      <div style={{ display: "flex", flex: 1, minHeight: 0, background: C.bg, paddingTop: 67 + bannerH }}>
+        <Side menus={auth.site === "m" ? MM : SM} cur={pg} nav={setPg} site={auth.site} col={col} toggle={() => setCol(!col)} bannerH={bannerH} />
         {/* 메인 콘텐츠: 좌상단 radius 32px, 가이드 padding 38px 40px */}
-        <main style={{ flex: 1, background: C.white, borderRadius: "20px 0 0 0", padding: "38px 40px 0 40px", overflowY: "auto", minWidth: 0, marginLeft: lnbW, scrollbarGutter: "stable", transition: "margin-left .25s ease" }}>
+        <main style={{ flex: 1, background: C.white, borderRadius: "20px 0 0 0", padding: "38px 40px 0 40px", overflowY: "auto", minWidth: 0, marginLeft: 30, scrollbarGutter: "stable" }}>
           <Page p={pg} s={auth.site} loginMsg={loginMsg} onSaveLoginMsg={setLoginMsg} nav={setPg} toast={toast} setBannerPreview={setBannerPreview} />
         </main>
       </div>
