@@ -18,11 +18,11 @@ const BASE = {
   green: "#19973C",
 };
 const THEME = {
-  m: { pri: "#339CD5", priL: "#E6F3FA", priD: "#2580AF", sec: "#457CE1", secL: "#457CE11A", brand: "#005CB9", brandD: "#004A94", brandG: "linear-gradient(135deg, #005cb9 0%, #339cd5 100%)", brandBg: "linear-gradient(160deg, #003e82 0%, #005CB9 60%, #0a2a5e 100%)", accent: "#0C8CE9" },
+  m: { pri: "#D0BFC3", priL: "#F3ECEE", priD: "#8A6E75", sec: "#C4ACB2", secL: "#C4ACB21A", brand: "#8A6E75", brandD: "#7A5F66", brandG: "linear-gradient(135deg, #8A6E75 0%, #D0BFC3 100%)", brandBg: "linear-gradient(160deg, #3D2E31 0%, #6B5359 60%, #2E2224 100%)", accent: "#D0BFC3" },
   s: { pri: "#19973C", priL: "#E8F5EC", priD: "#147A30", sec: "#19973C", secL: "#19973C1A", brand: "#15803D", brandD: "#116632", brandG: "linear-gradient(135deg, #15803D 0%, #19973C 100%)", brandBg: "linear-gradient(160deg, #0a4a20 0%, #15803D 60%, #0a3318 100%)", accent: "#19973C" },
 };
 const sideTheme = {
-  m: { active: "#339CD51A", activeTxt: "#339CD5" },
+  m: { active: "#D0BFC330", activeTxt: "#8A6E75" },
   s: { active: "#19973C1A", activeTxt: "#19973C" }
 };
 let C = { ...BASE, ...THEME.m };
@@ -216,7 +216,7 @@ const YnBadge = ({ v }) => {
   return <span style={{ padding: "3px 12px", borderRadius: 50, fontSize: 12, fontWeight: 600, background: isY ? "#31BB481A" : "#8C939D1A", color: isY ? "#31BB48" : "#8C939D", display: "inline-flex", alignItems: "center" }}>{isY ? "사용" : "미사용"}</span>;
 };
 const RoleBadge = ({ v }) => {
-  const rc = { "시스템관리자": { b: "#339CD51A", t: "#339CD5" }, "기관관리자": { b: "#31BB481A", t: "#31BB48" }, "유지보수총괄": { b: "#F36D001A", t: "#F36D00" }, "사용자": { b: "#E9ECF3", t: "#929292" } };
+  const rc = { "시스템관리자": { b: "#D0BFC330", t: "#8A6E75" }, "기관관리자": { b: "#31BB481A", t: "#31BB48" }, "유지보수총괄": { b: "#F36D001A", t: "#F36D00" }, "사용자": { b: "#E9ECF3", t: "#929292" } };
   const style = rc[v] || { b: "#E9ECF3", t: "#929292" };
   return <span style={{ padding: "3px 8px", borderRadius: 4, fontSize: 11, fontWeight: 500, background: style.b, color: style.t }}>{v}</span>;
 };
