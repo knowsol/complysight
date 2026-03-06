@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 
 /* ── 디자인 가이드 v1.0 컬러 시스템 ── */
 const BASE = {
