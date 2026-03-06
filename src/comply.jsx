@@ -9780,12 +9780,6 @@ const Login = ({ onLogin, loginMsg }) => {
         <button onClick={() => onLogin(uid, site)} style={{ width: "100%", padding: "13px", background: t.brand, color: "#fff", border: "none", borderRadius: 4, fontSize: 15, fontWeight: 600, cursor: "pointer", transition: "all .3s" }}
           onMouseEnter={e => e.currentTarget.style.background = t.brandD} onMouseLeave={e => e.currentTarget.style.background = t.brand}>로그인</button>
         <div style={{ textAlign: "center", marginTop: 14 }}><span style={{ fontSize: 12, color: t.brand, cursor: "pointer" }}>비밀번호 재설정</span></div>
-        {loginMsg && (
-          <div style={{ marginTop: 20, padding: "12px 14px", background: t.priL, border: `1px solid ${t.pri}30`, borderRadius: 6, fontSize: 12, color: t.priD, lineHeight: 1.65, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-            <div style={{ fontWeight: 700, marginBottom: 4, fontSize: 11, color: t.pri }}>📢 시스템 안내</div>
-            {loginMsg}
-          </div>
-        )}
       </div>
     </div>
   );
